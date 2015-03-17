@@ -22,13 +22,12 @@ const GLchar* vertexShaderSource = "#version 330 core\n"
 "ourColor = color;\n"
 "}\0";
 const GLchar* fragmentShaderSource = "#version 330 core\n"
+"in vec3 ourColor;\n"
 "out vec4 color;\n"
-"uniform vec4 ourColor;\n"
 "void main()\n"
 "{\n"
-"color = ourColor;\n"
+"color = vec4(ourColor, 1.0f);\n"
 "}\n\0";
-
 
 int main() {
 	cout << "Starting GLFW context, OpenGL 3.3" << endl;
@@ -91,10 +90,10 @@ int main() {
 
 
 	GLfloat vertices[] = {
-		0.5f, 0.5f, 0.0f,  // Top Right
-		0.5f, -0.5f, 0.0f,  // Bottom Right
-		-0.5f, -0.5f, 0.0f,  // Bottom Left
-		-0.5f, 0.5f, 0.0f   // Top Left 
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,// Top Right
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // Bottom Right
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // Bottom Left
+		-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, // Top Left 
 	};
 
 	GLuint indices[] = {
@@ -115,8 +114,10 @@ int main() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -132,10 +133,10 @@ int main() {
 
 		glUseProgram(shaderProgram);
 
-		GLfloat timeValue = glfwGetTime();
-		GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
-		GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+		//GLfloat timeValue = glfwGetTime();
+		//GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
+		//GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+		//glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
