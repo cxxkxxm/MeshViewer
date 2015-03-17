@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 #define GLEW_STATIC
 #include <GLEW\glew.h>
@@ -13,16 +14,21 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 
 const GLchar* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 position;\n"
+"layout (location = 1) in vec3 color;\n"
+"out vec3 ourColor;\n"
 "void main()\n"
 "{\n"
-"gl_Position = vec4(position.x, position.y, position.z, 1.0);\n"
+"gl_Position = vec4(position, 1.0);\n"
+"ourColor = color;\n"
 "}\0";
 const GLchar* fragmentShaderSource = "#version 330 core\n"
 "out vec4 color;\n"
+"uniform vec4 ourColor;\n"
 "void main()\n"
 "{\n"
-"color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"color = ourColor;\n"
 "}\n\0";
+
 
 int main() {
 	cout << "Starting GLFW context, OpenGL 3.3" << endl;
@@ -35,24 +41,11 @@ int main() {
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "MeshViewer", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
-	// ///
-	if (window == NULL)
-	{
-		cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
 
 	glfwSetKeyCallback(window, key_callback);
 
 	glewExperimental = GL_TRUE;
-	// glewInit();
-	if (glewInit() != GLEW_OK)
-	{
-		cout << "Failed to initialize GLEW" << std::endl;
-		return -1;
-	}
-
+	glewInit();
 
 	glViewport(0, 0, WIDTH, HEIGHT);
 	// vertex shader
@@ -138,6 +131,12 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
+
+		GLfloat timeValue = glfwGetTime();
+		GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
+		GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
