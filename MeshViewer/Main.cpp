@@ -122,6 +122,13 @@ int main() {
 
 		ourShader.Use();
 
+		glm::mat4 transform;
+		transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+		transform = glm::rotate(transform, (GLfloat)glfwGetTime() * 5.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+
+		GLint transformLoc = glGetUniformLocation(ourShader.Program, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
 		//GLfloat timeValue = glfwGetTime();
 		//GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
 		//GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
