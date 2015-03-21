@@ -5,6 +5,10 @@
 #include <GLFW\glfw3.h>
 #include <SOIL\SOIL.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "Shader.h"
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
